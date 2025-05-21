@@ -1,33 +1,28 @@
 package com.example.j_pensionat.Controllers;
 
 import com.example.j_pensionat.Models.Rooms;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
+@RequestMapping("/room")
 public class RoomsController {
 
-    @RequestMapping("Rooms")
-    public List<Rooms> getAvailableRooms() {
+    @GetMapping("")
+    public List<Rooms> getRooms() {
         // TODO
         return null;
     }
 
-    @RequestMapping("Rooms/notAvailable")   // behövs nog inte
-    public List<Rooms> getNotAvailableRooms() {
-        //  TODO
-        return null;
-    }
-
-    @RequestMapping("Rooms/change")     // ifall dem bygger om ett rum eller något
+    @PutMapping("/{Id}")     // ifall dem bygger om ett rum eller något
     public String changeRoom() {
         // TODO
         return null;
     }
 
-    @RequestMapping("Rooms/delete")        // ifall dem renoverar byggnaden eller något
+    @DeleteMapping("/{Id}")        // ifall dem renoverar byggnaden eller något
     public String deleteRoom() {
         // TODO
         return null;

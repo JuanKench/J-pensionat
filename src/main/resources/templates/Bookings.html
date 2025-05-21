@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bookings</title>
+</head>
+<body>
+
+<form th:action="@{/customers}" th:object="${customer}" method="post">
+    <label>Förnamn: <input type="text" th:field="{firstName}" /></label><br/>
+    <label>Efternamn: <input type="text" th:field="{lastName}" /></label><br/>
+    <label>Email: <input type="email" th:field="{email}" /></label><br/>
+    <label>Telefon: <input type="text" th:field="{phoneNumber}" /></label><br/>
+    <label>Adress: <input type="text" th:field="{address}" /></label><br/>
+    <label>Betalat? <input type="checkbox" th:field="{hasPaid}" /></label><br/>
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

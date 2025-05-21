@@ -13,7 +13,7 @@ public class Rooms {
     @GeneratedValue
     private long id;
 
-    private int roomType; // enkel eller dubbel rum
+    private Enum roomCategori; // enkel eller dubbel rum
 
     private String description; // förklaring av rummet behövs antagligen inte
 
