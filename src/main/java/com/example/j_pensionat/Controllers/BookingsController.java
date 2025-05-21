@@ -1,7 +1,6 @@
 package com.example.j_pensionat.Controllers;
 
 import com.example.j_pensionat.Models.Bookings;
-import com.example.j_pensionat.Models.Costumer;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +12,9 @@ import java.util.List;
 @RequestMapping("/bookings")
 public class BookingsController {
 
-    @GetMapping("")
-    public Bookings getBookings(@RequestParam int bookingpage) {
-        // TODO
-        return null;
+    @GetMapping("/hej")
+    public String getBookings() {
+        return "bookings";
     }
 
     @GetMapping("/list")
@@ -26,21 +24,30 @@ public class BookingsController {
     }
 
     @PostMapping("/add")
-    public Bookings addBooking(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, @RequestParam long costumerId, Model model) { // ni får ändra detta om ni vill
+    public String addBooking(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, @RequestParam long costumerId, Model model) { // ni får ändra detta om ni vill
         // TODO
-        return null;
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("costumerId", costumerId);
+        return "bookings";
     }
 
     @PutMapping("/{BookingId}")
     public String changeBookings(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, @RequestParam long costumerId, Model model) {
         // TODO
-        return null;
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("costumerId", costumerId);
+        return "bookings";
     }
 
     @DeleteMapping("/{BookingId}")
-    public String cancelBookings(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, @RequestParam long costumerId, Model model1) {
+    public String cancelBookings(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, @RequestParam long costumerId, Model model) {
         // TODO
-        return null;
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("costumerId", costumerId);
+        return "bookings";
     }
 
 }

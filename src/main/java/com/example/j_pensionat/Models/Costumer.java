@@ -16,11 +16,12 @@ public class Costumer {
     @GeneratedValue
     private long id;
 
-    private String costumerName;
+    private String firstName;
+    private String lastName;
     private int phoneNumber;
-    private boolean hasPayed; //det borde vara här men det finns inget krav på det
-    private String mail;
+    private boolean hasPaid; //det borde vara här men det finns inget krav på det
+    private String email;
     private String address;
-    private String notes; // allergi saker
+    //private String notes; // allergi saker
 
 }
