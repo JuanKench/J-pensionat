@@ -1,4 +1,4 @@
-package com.example.j_pensionat.Models;
+package com.example.j_pensionat.model;
 
 
 import jakarta.persistence.Entity;

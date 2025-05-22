@@ -1,4 +1,4 @@
-package com.example.j_pensionat.Controllers;
+package com.example.j_pensionat.controller;
 
 
 import org.springframework.stereotype.Controller;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/costumer")
-public class CostumerController {
+public class CustomerController {
 
     @PostMapping("/add")
     public String addCostumer() {

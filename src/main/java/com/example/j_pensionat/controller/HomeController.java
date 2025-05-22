@@ -1,4 +1,4 @@
-package com.example.j_pensionat.Controllers;
+package com.example.j_pensionat.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
