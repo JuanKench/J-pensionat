@@ -58,7 +58,7 @@ public class CustomerController {
         return "customers-edit-form";
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/edit/{id}")
     public String updateCustomer(@PathVariable Long id, @Valid @ModelAttribute("customer") CustomerDto customerDto, BindingResult result) {
         if(result.hasErrors()){
             return "customers-edit-form";
