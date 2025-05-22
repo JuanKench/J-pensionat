@@ -1,6 +1,6 @@
-package com.example.j_pensionat.Controllers;
+package com.example.j_pensionat.controller;
 
-import com.example.j_pensionat.Models.Bookings;
+import com.example.j_pensionat.model.Booking;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/bookings")
-public class BookingsController {
+public class BookingController {
 
     @GetMapping("/hej")
     public String getBookings() {
@@ -18,7 +18,7 @@ public class BookingsController {
     }
 
     @GetMapping("/list")
-    public List<Bookings> getBookingsList(@RequestParam int bookingpage) {
+    public List<Booking> getBookingsList(@RequestParam int bookingpage) {
         // TODO
         return null;
     }
