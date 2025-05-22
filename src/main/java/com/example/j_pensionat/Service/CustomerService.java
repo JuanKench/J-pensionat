@@ -1,4 +1,4 @@
 package com.example.j_pensionat.Service;
 
-public class CostumerService {
+public class CustomerService {
 }

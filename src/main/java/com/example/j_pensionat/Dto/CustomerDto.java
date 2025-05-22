@@ -1,4 +1,4 @@
 package com.example.j_pensionat.Dto;
 
-public class CostumerDto {
+public class CustomerDto {
 }

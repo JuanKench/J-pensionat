@@ -1,6 +1,6 @@
 package com.example.j_pensionat.Controllers;
 
-import com.example.j_pensionat.Models.Rooms;
+import com.example.j_pensionat.Models.Room;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class RoomsController {
 
     @GetMapping("")
-    public List<Rooms> getRooms() {
+    public List<Room> getRooms() {
         // TODO
         return null;
     }
