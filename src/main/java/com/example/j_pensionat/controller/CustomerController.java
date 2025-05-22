@@ -22,14 +22,14 @@ public class CustomerController {
 
     @GetMapping
     public String listCustomers(Model model){
-        List<CustomerDto> customers = this.customerService.findAllCustomers();
+        List<CustomerDto> customers = customerService.findAllCustomers();
         model.addAttribute("customers", customers);
         return "customers-list";
     }
 
     @GetMapping("/details/{id}")
     public String customerDetails(@PathVariable Long id, Model model){
-        CustomerDto customerDto = this.customerService.findCustomerById(id);
+        CustomerDto customerDto = customerService.findCustomerById(id);
         model.addAttribute("customer", customerDto);
         return "customers-details";
     }
@@ -47,13 +47,13 @@ public class CustomerController {
             model.addAttribute("customer", customerDto);
             return "customers-new-form";
         }
-        this.customerService.saveCustomer(customerDto);
+        customerService.saveCustomer(customerDto);
         return "redirect:/customers";
     }
 
     @GetMapping("/edit/{id}")
     public String editCustomerForm(@PathVariable Long id, Model model){
-        CustomerDto customerDto = this.customerService.findCustomerById(id);
+        CustomerDto customerDto = customerService.findCustomerById(id);
         model.addAttribute("customer", customerDto);
         return "customers-edit-form";
     }
@@ -64,13 +64,13 @@ public class CustomerController {
             return "customers-edit-form";
         }
         customerDto.setId(id);
-        this.customerService.updateCustomer(customerDto);
+        customerService.updateCustomer(customerDto);
         return "redirect:/customers";
     }
 
     @DeleteMapping("/{id}")
     public String deleteCustomer(@PathVariable Long id) {
-        this.customerService.deleteCustomerById(id);
+        customerService.deleteCustomerById(id);
         return "redirect:/customers";
     }
 
