@@ -1,4 +1,4 @@
-package com.example.j_pensionat.Models;
+package com.example.j_pensionat.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Rooms {
+public class Room {
 
     @Id
     @GeneratedValue

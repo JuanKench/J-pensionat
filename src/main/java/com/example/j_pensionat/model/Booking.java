@@ -1,4 +1,4 @@
-package com.example.j_pensionat.Models;
+package com.example.j_pensionat.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-public class Bookings {
+public class Booking {
 
     @Id
     @GeneratedValue

@@ -1,16 +1,14 @@
-package com.example.j_pensionat.Models;
+package com.example.j_pensionat.model;
 
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
 
 @Data
 @Entity
-public class Costumer {
+public class Customer {
 
     @Id
     @GeneratedValue
