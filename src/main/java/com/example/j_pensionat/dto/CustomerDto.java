@@ -1,5 +1,10 @@
 package com.example.j_pensionat.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class CustomerDto {
     private Long id;
     private String firstName;
