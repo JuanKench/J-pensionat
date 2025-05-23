@@ -28,9 +28,24 @@
   <br/>
 
   <div>
+    <label for="phoneNumber">Telefonnummer:</label>
+    <input type="text" id="phoneNumber" th:field="*{phoneNumber}" />
+    <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+  </div>
+
+  <br/>
+
+  <div>
     <label for="address">Adress:</label>
     <input type="text" id="address" th:field="*{address}" />
     <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+  </div>
+
+  <br/>
+
+  <div>
+    <label for="hasPaid">Har betalat:</label>
+    <input type="checkbox" id="hasPaid" th:field="*{hasPaid}" />
   </div>
 
   <br/>
