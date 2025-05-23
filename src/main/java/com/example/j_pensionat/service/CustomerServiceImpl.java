@@ -32,7 +32,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDto findCustomerById(Long id) {
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new RuntimeException("Kund kunde inte hittas"));
         return customerMapper.toDto(customer);
     }
 
@@ -45,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void updateCustomer(CustomerDto dto) {
         Customer customer = customerMapper.toEntity(dto);
-        customerRepository.save(customer); // assumes same ID -> update
+        customerRepository.save(customer);
     }
 
     @Override

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Kundlista</title>
+</head>
+<body>
+<h1>Alla kunder</h1>
+
+<a th:href="@{/customers/new}">Ny kund</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Förnamn</th>
+        <th>Efternamn</th>
+        <th>Email</th>
+        <th>Åtgärder</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="customer : ${customers}">
+        <td th:text="${customer.id}">1</td>
+        <td th:text="${customer.firstName}">Förnamn</td>
+        <td th:text="${customer.lastName}">Efternamn</td>
+        <td th:text="${customer.email}">email@example.com</td>
+        <td>
+            <a th:href="@{'/customers/details/' + ${customer.id}}">Detaljer</a> |
+            <a th:href="@{'/customers/edit/' + ${customer.id}}">Redigera</a> |
+            <form th:action="@{'/customers/' + ${customer.id}}" method="post" style="display:inline;">
+                <input type="hidden" name="_method" value="delete"/>
+                <button type="submit" onclick="return confirm('Är du säker på att du vill ta bort denna kund?');">Ta bort</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -28,10 +28,7 @@ public class Customer {
     private String lastName;
 
     @NotBlank(message = "Telefonnummer får inte vara tomt")
-    @Pattern(
-            regexp = "^(\\+46|0)[1-9]\\d{6,9}$",
-            message = "Ogiltigt telefonnummer. Ex: 0701234567 eller +46701234567"
-    )
+
     private String phoneNumber;
 
     @NotBlank(message = "E-post får inte vara tomt")
