@@ -1,28 +1,43 @@
 package com.example.j_pensionat.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Booking {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name ="customer_id")
+    @NotNull(message = "Kund måste anges")
+    private Customer customer;
 
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    @NotNull(message = "Rum måste anges")
+    private Room room;
+
+    @NotNull(message = "Startdatum måste anges")
     private LocalDate startDate;
+
+    @NotNull(message = "Slutdatum måste anges")
+    @FutureOrPresent(message = "Slutdatum måste vara idag eller senare")
     private LocalDate endDate;
 
-    private int extraBed; // ifall man vill ha en extra säng om man har valt dubbelrum
+    @Min(value = 1, message = "Minst 1 gäst måste bokas")
+    @Max(value = 4, message = "Maximalt 4 gäster per boking")
+    private int numGuests;
 
-    private int costumerId; // vem som har bokat
-    private int roomId; // vilket rum som är bokat info om rum kommer från Rooms tex(dubbel rum)
-
-
+    @Min(value = 0, message = "Extra sängar kan inte vara mindre än 0")
+    @Max(value = 1, message = "Max 1 extra säng tillåten")
+    private int extraBed;
 }
