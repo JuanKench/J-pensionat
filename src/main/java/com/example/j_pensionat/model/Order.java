@@ -17,18 +17,22 @@ public class Order {
     private long id;
     private LocalDate startDate;
     private LocalDate endDate;
-    private int customerId; // vem som har bokat
-    private int roomId; // vilket rum som är bokat info om rum kommer från Rooms tex(dubbel rum)
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
     private String notes;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LineItem> lineItems;
 
-    public Order(LocalDate startDate, LocalDate endDate, int customerId, int roomId, String notes, List<LineItem> lineItems) {
+    public Order(LocalDate startDate, LocalDate endDate, Customer customer, Room room, String notes, List<LineItem> lineItems) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.customerId = customerId;
-        this.roomId = roomId;
+        this.customer = customer;
+        this.room = room;
         this.notes = notes;
         this.lineItems = lineItems;
     }

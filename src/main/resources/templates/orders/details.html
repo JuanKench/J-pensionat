@@ -10,8 +10,8 @@
     </head>
     <body>
     <h1>Booking Details</h1>
-    <p>Customer ID: <span th:text="${order.customerId}"></span></p>
-    <p>Room ID: <span th:text="${order.roomId}"></span></p>
+    <p>Customer: <span th:text="${order.customer.lastName}"></span></p>
+    <p>Room: <span th:text="${order.room.name}"></span></p>
     <p>Start Date: <span th:text="${order.startDate}"></span></p>
     <p>End Date: <span th:text="${order.endDate}"></span></p>
     <p>Anteckningar: <span th:text="${order.notes}"></span></p>
@@ -34,6 +34,7 @@
         </tbody>
     </table>
     <a th:href="@{../../orders/edit/{id}(id=${order.id})}">Ändra</a>
+    <br>
     <a href="../../orders/manage">Tillbaka</a>
     </body>
 </html>

@@ -9,9 +9,8 @@ public class LineItemDto {
     Long id;
     Long orderId;
     Long productId;
-
     String productName;
-
+    String productType;
     Long quantity;
     boolean keep = true;
 }

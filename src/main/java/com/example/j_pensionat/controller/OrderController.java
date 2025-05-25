@@ -3,33 +3,73 @@ package com.example.j_pensionat.controller;
 import com.example.j_pensionat.dto.booking.UpdateRequest;
 import com.example.j_pensionat.enums.templatepath.OrderTemplatePath;
 import com.example.j_pensionat.model.Order;
+import com.example.j_pensionat.model.Product;
+import com.example.j_pensionat.repository.ProductRepository;
 import com.example.j_pensionat.service.OrderService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
+    private final ProductRepository productRepository;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, ProductRepository productRepository) {
         this.orderService = orderService;
+        this.productRepository = productRepository;
     }
 
     //Resources
     @PutMapping("/{id}")
-    public String update(@PathVariable long id, UpdateRequest request, Model model) {
-        orderService.update(id, request);
-        model.addAttribute("orders", orderService.findAll());
-        return "redirect:/orders/manage";
+    public String update(@PathVariable long id,
+                         @ModelAttribute UpdateRequest request,
+                         Model model) {
+        try {
+            orderService.update(id, request);
+
+            model.addAttribute("orders", orderService.findAll());
+            return OrderTemplatePath.MANAGE.getPath();
+
+        } catch (IllegalStateException ex) {
+            model.addAttribute("request", request);
+            model.addAttribute("error", ex.getMessage());
+
+            List<Product> allProducts = productRepository.findAll();
+            model.addAttribute("allProducts", allProducts);
+
+            try {
+                String productsJson = new ObjectMapper().writeValueAsString(allProducts);
+                model.addAttribute("productsJson", productsJson);
+            } catch (JsonProcessingException e) {
+                model.addAttribute("productsJson", "[]");
+            }
+
+            return OrderTemplatePath.EDIT.getPath();
+        }
     }
+
 
     //Views
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable long id, Model model) {
+    public String edit(@PathVariable long id, Model model) throws JsonProcessingException {
         UpdateRequest request = orderService.createUpdateRequest(id);
         model.addAttribute("request", request);
+
+
+        List<Product> allProducts = productRepository.findAll();
+        ObjectMapper mapper = new ObjectMapper();
+        String productsJson = mapper.writeValueAsString(allProducts);
+
+        model.addAttribute("productsJson", productsJson);
+        model.addAttribute("allProducts", allProducts);
+
+
         return OrderTemplatePath.EDIT.getPath();
     }
 
@@ -50,66 +90,4 @@ public class OrderController {
     public String create() {
         return OrderTemplatePath.CREATE.getPath();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //Old
-
-//    @GetMapping("/hej")
-//    public String getBookings() {
-//        return "bookings";
-//    }
-//
-//    @GetMapping("/list")
-//    public List<Order> getBookingsList(@RequestParam int bookingpage) {
-//        // TODO
-//        return null;
-//    }
-//
-//    @PostMapping("/add")
-//    public String addBooking(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, @RequestParam long costumerId, Model model) { // ni får ändra detta om ni vill
-//        // TODO
-//        model.addAttribute("startDate", startDate);
-//        model.addAttribute("endDate", endDate);
-//        model.addAttribute("costumerId", costumerId);
-//        return "bookings";
-//    }
-//
-//    @PutMapping("/{BookingId}")
-//    public String changeBookings(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, @RequestParam long costumerId, Model model) {
-//        // TODO
-//        model.addAttribute("startDate", startDate);
-//        model.addAttribute("endDate", endDate);
-//        model.addAttribute("costumerId", costumerId);
-//        return "bookings";
-//    }
-//
-//    @DeleteMapping("/{BookingId}")
-//    public String cancelBookings(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate, @RequestParam long costumerId, Model model) {
-//        // TODO
-//        model.addAttribute("startDate", startDate);
-//        model.addAttribute("endDate", endDate);
-//        model.addAttribute("costumerId", costumerId);
-//        return "bookings";
-//    }
-
 }

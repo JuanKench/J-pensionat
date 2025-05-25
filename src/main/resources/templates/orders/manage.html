@@ -16,16 +16,15 @@
         <tr>
             <th>Start Date</th>
             <th>End Date</th>
-            <th>Extra Bed</th>
-            <th>Customer ID</th>
-            <th>Room ID</th>
+            <th>Room</th>
+            <th>Customer</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="order : ${orders}">
             <td colspan="5">
                 <a th:href="@{/orders/details/{id}(id=${order.id})}">
-                    <span th:text="${order.startDate} + ' → ' + ${order.endDate} + ' | Room ' + ${order.roomId} + ' | Customer ' + ${order.customerId}"></span>
+                    <span th:text="${order.startDate} + ' → ' + ${order.endDate} + ' | ' + ${order.room.name} + ' | ' + ${order.customer.lastName}"></span>
                 </a>
             </td>
         </tr>

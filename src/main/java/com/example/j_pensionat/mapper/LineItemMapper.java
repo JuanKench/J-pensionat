@@ -14,7 +14,9 @@ public interface LineItemMapper {
     @Named("lineItemToDto")
     @Mapping(source = "product.id", target = "productId")
     @Mapping(source = "product.name", target = "productName")
+    @Mapping(source = "product.type", target = "productType")
     LineItemDto toDto(LineItem entity);
+
 
     @Mapping(source = "dto.id", target = "id")
     @Mapping(source = "dto.quantity", target = "quantity")
