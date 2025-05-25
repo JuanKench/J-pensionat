@@ -1,0 +1,39 @@
+<!-- @thymesVar id="order" type="com.example.j_pensionat.model.Order" -->
+<!-- @thymesVar id="bookingAddOn" type="com.example.j_pensionat.model.LineItem" -->
+<!-- @thymesVar id="addOn" type="com.example.j_pensionat.model.Product" -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" content="text/html; charset=UTF-8"/>
+        <title>bookings</title>
+    </head>
+    <body>
+    <h1>Booking Details</h1>
+    <p>Customer ID: <span th:text="${order.customerId}"></span></p>
+    <p>Room ID: <span th:text="${order.roomId}"></span></p>
+    <p>Start Date: <span th:text="${order.startDate}"></span></p>
+    <p>End Date: <span th:text="${order.endDate}"></span></p>
+    <p>Anteckningar: <span th:text="${order.notes}"></span></p>
+
+    <p>Tillägg: </p>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="lineItem : ${order.lineItems}">
+            <td colspan="3">
+                <span th:text="${lineItem.product.name + '|' + lineItem.quantity + '|' + lineItem.product.price}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{../../orders/edit/{id}(id=${order.id})}">Ändra</a>
+    <a href="../../orders/manage">Tillbaka</a>
+    </body>
+</html>

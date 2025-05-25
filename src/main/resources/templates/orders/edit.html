@@ -1,0 +1,45 @@
+<!-- @thymesVar id="request" type="com.example.j_pensionat.dto.booking.UpdateRequest" -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Ändra bokning</title>
+</head>
+<body>
+
+<h1>Ändra bokning</h1>
+<a href="/orders/manage">Tillbaka</a>
+
+<form th:action="@{/orders/{id}(id=${request.orderId})}" method="post" th:object="${request}">
+    <input type="hidden" name="_method" value="put" />
+
+    <!-- Order Notes -->
+    <label for="notes">Anteckningar:</label>
+    <input type="text" th:field="*{notes}" id="notes" />
+    <br><br>
+
+    <!-- Line Items -->
+    <div th:each="item, iStat : *{lineItems}">
+        <input type="hidden" th:field="*{lineItems[__${iStat.index}__].id}" />
+        <input type="hidden" th:field="*{lineItems[__${iStat.index}__].orderId}" />
+        <input type="hidden" th:field="*{lineItems[__${iStat.index}__].productId}" />
+
+        <label>Produkt:</label>
+        <span th:text="${item.productName}">Produktnamn</span>
+
+        <label th:for="'qty_' + ${iStat.index}">Antal:</label>
+        <input type="number"
+               th:field="*{lineItems[__${iStat.index}__].quantity}"
+               th:id="'qty_' + ${iStat.index}" />
+
+        <label for="checkbox">Behåll?</label>
+        <input type="checkbox" th:field="*{lineItems[__${iStat.index}__].keep}" id="checkbox"/>
+        <br><br>
+    </div>
+
+    <button type="submit">Bekräfta</button>
+</form>
+
+</body>
+</html>
