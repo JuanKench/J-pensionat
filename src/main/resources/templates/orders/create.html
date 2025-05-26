@@ -1,11 +1,67 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8" content="text/html; charset=UTF-8"/>
-        <title>bookings</title>
-    </head>
-    <body>
-        <h1>Ny bokning</h1>
-    <a href="/orders/manage">Tillbaka</a>
-    </body>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ny bokning</title>
+    <script>
+        function toggleCustomerFields() {
+            const useExisting = document.querySelector('input[name="useExistingCustomer"]:checked').value === 'true';
+            document.getElementById('existing-customer').style.display = useExisting ? 'block' : 'none';
+            document.getElementById('new-customer').style.display = useExisting ? 'none' : 'block';
+        }
+        window.onload = toggleCustomerFields;
+    </script>
+</head>
+<body>
+<h1>Skapa ny bokning</h1>
+
+<!-- Error message block -->
+<div th:if="${errorMessage}" style="color:red; font-weight:bold;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<form th:action="@{/orders/create}" th:object="${createOrderDto}" method="post">
+    <h3>Kundtyp</h3>
+    <label>
+        <input type="radio" th:field="*{useExistingCustomer}" value="true" checked onchange="toggleCustomerFields()" />
+        Använd befintlig kund
+    </label>
+    <label>
+        <input type="radio" th:field="*{useExistingCustomer}" value="false" onchange="toggleCustomerFields()" />
+        Skapa ny kund
+    </label>
+
+    <div id="existing-customer">
+        <label>Kund:</label>
+        <select th:field="*{customerId}">
+            <option th:each="c : ${customers}"
+                    th:value="${c.id}"
+                    th:text="${c.firstName + ' ' + c.lastName}">Kund</option>
+        </select><br/>
+    </div>
+
+    <div id="new-customer" style="display:none;" th:insert="fragments/customer-form-fragment :: customerFields"></div>
+
+    <h3>Bokningsdetaljer</h3>
+    <label>Rum:</label>
+    <select th:field="*{roomId}">
+        <option th:each="r : ${rooms}" th:value="${r.id}" th:text="${r.name}">Rum</option>
+    </select><br/>
+
+    <label>Startdatum:</label>
+    <input type="date" th:field="*{startDate}"/><br/>
+
+    <label>Slutdatum:</label>
+    <input type="date" th:field="*{endDate}"/><br/>
+
+    <label>Tillval:</label>
+    <select multiple th:field="*{productIds}">
+        <option th:each="p : ${products}" th:value="${p.id}" th:text="${p.name}">Tillval</option>
+    </select><br/>
+
+    <label>Anteckningar:</label>
+    <textarea th:field="*{notes}"></textarea><br/>
+
+    <button type="submit">Skapa bokning</button>
+</form>
+</body>
 </html>

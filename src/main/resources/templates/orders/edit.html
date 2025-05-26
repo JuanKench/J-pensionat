@@ -13,7 +13,6 @@
 
 <form th:action="@{/orders/{id}(id=${request.orderId})}" method="post" th:object="${request}">
     <input type="hidden" name="_method" value="put"/>
-
     <div th:if="${error}" style="color: red; font-weight: bold;">
         <p th:text="${error}"></p>
     </div>
