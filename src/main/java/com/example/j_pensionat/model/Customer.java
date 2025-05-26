@@ -38,8 +38,6 @@ public class Customer {
 
     @NotBlank(message = "Adress får inte vara tomt")
     private String address;
-
-    private boolean hasPaid;
     //private String notes; // allergi saker
 
 }
