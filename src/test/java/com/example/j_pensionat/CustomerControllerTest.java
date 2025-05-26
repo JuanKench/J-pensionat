@@ -27,7 +27,7 @@ public class CustomerControllerTest {
     private CustomerServiceImpl customerService;
 
     @Test
-    public void testFindAllCustomers_shouldReturnCustomerListView() throws Exception {
+    public void testFindAllCustomers() throws Exception {
         CustomerDto dto = new CustomerDto();
         dto.setId(1L);
         dto.setFirstName("Anna");
@@ -41,7 +41,7 @@ public class CustomerControllerTest {
     }
 
     @Test
-    public void testSaveCustomer_shouldReturnFormView() throws Exception {
+    public void testSaveCustomer() throws Exception {
         mockMvc.perform(get("/customers/new"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("customers-new-form"))
