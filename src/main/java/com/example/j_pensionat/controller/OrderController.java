@@ -1,10 +1,9 @@
 package com.example.j_pensionat.controller;
 
 import com.example.j_pensionat.dto.CreateOrderDto;
-import com.example.j_pensionat.dto.booking.UpdateRequest;
+import com.example.j_pensionat.dto.order.OrderDto;
 import com.example.j_pensionat.enums.templatepath.OrderTemplatePath;
 import com.example.j_pensionat.model.Order;
-import com.example.j_pensionat.model.Product;
 import com.example.j_pensionat.repository.CustomerRepository;
 import com.example.j_pensionat.repository.ProductRepository;
 import com.example.j_pensionat.repository.RoomRepository;
@@ -14,7 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -35,48 +33,23 @@ public class OrderController {
 
     //Resources
     @PutMapping("/{id}")
-    public String update(@PathVariable long id,
-                         @ModelAttribute UpdateRequest request,
-                         Model model) {
+    public String update(@PathVariable Long id, OrderDto orderDto, Model model) {
         try {
-            orderService.update(id, request);
-
+            orderService.update(orderDto);
             model.addAttribute("orders", orderService.findAll());
             return OrderTemplatePath.MANAGE.getPath();
-
-        } catch (IllegalStateException ex) {
-            model.addAttribute("request", request);
+        } catch (Exception ex) {
+            model.addAttribute("order", orderDto);
             model.addAttribute("error", ex.getMessage());
-
-            List<Product> allProducts = productRepository.findAll();
-            model.addAttribute("allProducts", allProducts);
-
-            try {
-                String productsJson = new ObjectMapper().writeValueAsString(allProducts);
-                model.addAttribute("productsJson", productsJson);
-            } catch (JsonProcessingException e) {
-                model.addAttribute("productsJson", "[]");
-            }
-
             return OrderTemplatePath.EDIT.getPath();
         }
     }
 
-
     //Views
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable long id, Model model) throws JsonProcessingException {
-        UpdateRequest request = orderService.createUpdateRequest(id);
-        model.addAttribute("request", request);
-
-
-        List<Product> allProducts = productRepository.findAll();
-        ObjectMapper mapper = new ObjectMapper();
-        String productsJson = mapper.writeValueAsString(allProducts);
-
-        model.addAttribute("productsJson", productsJson);
-        model.addAttribute("allProducts", allProducts);
-
+    public String edit(@PathVariable long id, Model model) {
+        OrderDto order = orderService.orderDto(id);
+        model.addAttribute("order", order);
 
         return OrderTemplatePath.EDIT.getPath();
     }
@@ -124,7 +97,4 @@ public class OrderController {
         orderService.deleteOrder(id);
         return "redirect:/orders/manage";
     }
-
-
-
 }

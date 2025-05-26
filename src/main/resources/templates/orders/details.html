@@ -28,9 +28,9 @@
         </thead>
         <tbody>
         <tr th:each="lineItem : ${order.lineItems}">
-            <td colspan="3">
-                <span th:text="${lineItem.product.name + '|' + lineItem.quantity + '|' + lineItem.product.price}"></span>
-            </td>
+            <td th:text="${lineItem.product.name}">Produktnamn</td>
+            <td th:text="${lineItem.quantity}">Antal</td>
+            <td th:text="${lineItem.product.price}">Pris</td>
         </tr>
 
         </tbody>
