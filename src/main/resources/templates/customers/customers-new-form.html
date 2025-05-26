@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ny kund</title>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<h1>Skapa ny kund</h1>
+
+<form th:action="@{/customers/new}" th:object="${customer}" method="post">
+    <div th:insert="fragments/customer-form-fragment :: customerFields"></div>
+
+    <div>
+        <label for="hasPaid">Har betalat:</label>
+        <input type="checkbox" id="hasPaid" th:field="*{hasPaid}" />
+    </div>
+
+    <button type="submit">Spara</button>
+</form>
+
+</body>
+</html>

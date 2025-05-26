@@ -2,35 +2,50 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Welcome</title>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
     <!--    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>-->
     <!--    <link href="/output.css" rel="stylesheet">-->
-    </head>
-    <body>
-    <h1>All Bookings</h1>
+</head>
+<body>
+<h1>All Bookings</h1>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Room</th>
-            <th>Customer</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="order : ${orders}">
-            <td colspan="5">
-                <a th:href="@{/orders/details/{id}(id=${order.id})}">
-                    <span th:text="${order.startDate} + ' → ' + ${order.endDate} + ' | ' + ${order.room.name} + ' | ' + ${order.customer.lastName}"></span>
-                </a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Room</th>
+        <th>Customer</th>
+        <th>Betalstatus</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td colspan="4">
+            <a th:href="@{/orders/details/{id}(id=${order.id})}">
+            <span th:text="
+                ${order.startDate} + ' | '
+                + ${order.endDate} + ' | '
+                + ${order.room.name} + ' | '
+                + ${order.customer.firstName} + ' ' + ${order.customer.lastName} + ' | '
+                + (${order.customer.hasPaid} ? 'Betalt' : 'Ej betalt')">
+            </span>
+            </a>
+        </td>
+        <td>
+            <form th:action="@{/orders/{id}/delete(id=${order.id})}" method="post" style="display:inline;">
+                <button type="submit" onclick="return confirm('Är du säker på att du vill ta bort bokningen?');">
+                    🗑 Ta bort
+                </button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
 
-        <a href="/orders/create">Ny bokning</a>
-    </body>
+</table>
+
+<a href="/orders/create">Ny bokning</a>
+</body>
 </html>

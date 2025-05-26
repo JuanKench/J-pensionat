@@ -15,6 +15,7 @@
     <p>Start Date: <span th:text="${order.startDate}"></span></p>
     <p>End Date: <span th:text="${order.endDate}"></span></p>
     <p>Anteckningar: <span th:text="${order.notes}"></span></p>
+    <p>Betalstatus: <span th:text="${order.customer.hasPaid}"></span></p>
 
     <p>Tillägg: </p>
     <table>
@@ -31,6 +32,7 @@
                 <span th:text="${lineItem.product.name + '|' + lineItem.quantity + '|' + lineItem.product.price}"></span>
             </td>
         </tr>
+
         </tbody>
     </table>
     <a th:href="@{../../orders/edit/{id}(id=${order.id})}">Ändra</a>

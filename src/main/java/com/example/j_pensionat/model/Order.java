@@ -41,6 +41,8 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LineItem> lineItems;
 
+    private boolean cancelled = false;
+
     //TODO: Saknas funktionalitet för det här.
 //    @Min(value = 1, message = "Minst 1 gäst måste bokas")
 //    @Max(value = 4, message = "Maximalt 4 gäster per boking")
@@ -54,4 +56,6 @@ public class Order {
         this.notes = notes;
         this.lineItems = lineItems;
     }
+
+
 }
