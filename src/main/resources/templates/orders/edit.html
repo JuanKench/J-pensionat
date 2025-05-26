@@ -1,5 +1,4 @@
-<!-- @thymesVar id="request" type="com.example.j_pensionat.dto.booking.UpdateRequest" -->
-<!-- @thymesVar id="prod" type="com.example.j_pensionat.model.Product" -->
+<!-- @thymesVar id="order" type="com.example.j_pensionat.dto.order.OrderDto" -->
 
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
@@ -11,118 +10,45 @@
 
 <h1>Ändra bokning</h1>
 
-<form th:action="@{/orders/{id}(id=${request.orderId})}" method="post" th:object="${request}">
-    <input type="hidden" name="_method" value="put"/>
-
-    <div th:if="${error}" style="color: red; font-weight: bold;">
-        <p th:text="${error}"></p>
-    </div>
+<div th:if="${error}" style="color: red; font-weight: bold;">
+    <p th:text="${error}"></p>
+</div>
 
 
-    <label for="notes">Anteckningar:</label>
-    <input type="text" th:field="*{notes}" id="notes" />
-    <br><br>
+<form th:action="@{/orders/{id}(id=${order.orderId})}" method="post" th:object="${order}">
+    <input type="hidden" name="_method" value="put">
 
-    <label for="productSelector">Lägg till tillägg:</label>
-    <select id="productSelector">
-        <option value="">Välj tillägg</option>
-        <option th:each="prod : ${allProducts}" th:value="${prod.id}" th:text="${prod.name}"></option>
-    </select>
-    <button type="button" onclick="addSelectedProduct()">Lägg till</button>
-    <br><br>
+    <input type="hidden" th:field="*{orderId}" />
 
-    <div id="lineItems">
-        <div th:each="item, iStat : *{lineItems}" th:id="'product-' + ${item.productId}">
-            <input type="hidden" th:field="*{lineItems[__${iStat.index}__].id}" />
-            <input type="hidden" th:field="*{lineItems[__${iStat.index}__].orderId}" />
-            <input type="hidden" th:field="*{lineItems[__${iStat.index}__].productId}" />
-            <input type="hidden" th:field="*{lineItems[__${iStat.index}__].keep}" />
+    <label for="notes">Anteckningar: </label>
+    <input th:field="*{notes}" id="notes">
 
-            <label th:text="${item.productName}">Produktnamn</label>
-            <th:block th:if="${item.productType == 'EXTRA_BED'}">
-                <label>Antal:</label>
-                <input type="number" th:field="*{lineItems[__${iStat.index}__].quantity}" min="1" />
-            </th:block>
-            <th:block th:unless="${item.productType == 'EXTRA_BED'}">
-                <input type="hidden" th:field="*{lineItems[__${iStat.index}__].quantity}" value="1" />
-            </th:block>
+    <br>
+    <label for="lineItems">Tillägg: </label>
+    <div th:each="lineItem, stat : *{lineItems}" id="lineItems">
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].productId}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].productName}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].productType}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].price}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].available}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].maxQuantity}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].orderId}" />
 
-            <button type="button" th:onclick="'removeExistingItem(' + ${item.productId} + ')'" >Ta bort</button>
-            <br><br>
-        </div>
+
+        <label th:text="${lineItem.productName}">Produktnamn</label>
+
+        <input th:field="*{lineItems[__${stat.index}__].quantity}"
+               min="0"
+               th:max="${lineItem.maxQuantity}"
+               th:disabled="${!lineItem.available}" />
+
+        <span th:if="${!lineItem.available}" style="color: gray;">Ej tillgänglig</span>
     </div>
 
     <button type="submit">Bekräfta</button>
+
+    <br>
+    <a href="/orders/manage">Tillbaka</a>
 </form>
-
-<a href="/orders/manage">Tillbaka</a>
-
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    let index = /*[[${#lists.size(request.lineItems)}]]*/ 0;
-    let orderId = /*[[${request.orderId}]]*/ 0;
-    let products = /*[[${productsJson}]]*/ [];
-
-    if (typeof products === 'string') {
-        products = JSON.parse(products);
-    }
-
-    function addSelectedProduct() {
-        const select = document.getElementById("productSelector");
-        const productId = select.value;
-        if (!productId) return;
-
-        const existing = document.getElementById(`product-${productId}`);
-        if (existing) return;
-
-        const product = products.find(p => p.id == productId);
-        if (!product) return;
-
-        const container = document.getElementById("lineItems");
-        const div = document.createElement("div");
-        div.id = `product-${productId}`;
-
-        let html = `
-            <input type="hidden" name="lineItems[${index}].orderId" value="${orderId}" />
-            <input type="hidden" name="lineItems[${index}].productId" value="${productId}" />
-            <input type="hidden" name="lineItems[${index}].keep" value="true" />
-            <label>${product.name}:</label>
-        `;
-
-        if (product.type === 'EXTRA_BED') {
-            html += `
-                <label>Antal:</label>
-                <input type="number" name="lineItems[${index}].quantity" value="1" min="1" />
-            `;
-        } else {
-            html += `
-                <input type="hidden" name="lineItems[${index}].quantity" value="1" />
-            `;
-        }
-
-        html += `<button type="button" onclick="removeProduct(${productId})">Ta bort</button><br><br>`;
-
-        div.innerHTML = html;
-        container.appendChild(div);
-        index++;
-    }
-
-    function removeProduct(productId) {
-        const element = document.getElementById(`product-${productId}`);
-        if (element) element.remove();
-    }
-
-    function removeExistingItem(productId) {
-        const el = document.getElementById(`product-${productId}`);
-        if (el) {
-            const keepField = el.querySelector("input[name$='.keep']");
-            if (keepField) keepField.value = false;
-            el.style.display = "none";
-        }
-    }
-    /*]]>*/
-</script>
-
-
 </body>
 </html>

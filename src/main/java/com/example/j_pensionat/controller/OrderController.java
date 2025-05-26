@@ -1,78 +1,50 @@
 package com.example.j_pensionat.controller;
 
-import com.example.j_pensionat.dto.booking.UpdateRequest;
+import com.example.j_pensionat.dto.order.LineItemDto;
+
+import com.example.j_pensionat.dto.order.OrderDto;
 import com.example.j_pensionat.enums.templatepath.OrderTemplatePath;
 import com.example.j_pensionat.model.Order;
-import com.example.j_pensionat.model.Product;
-import com.example.j_pensionat.repository.ProductRepository;
 import com.example.j_pensionat.service.OrderService;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
-    private final ProductRepository productRepository;
 
-    public OrderController(OrderService orderService, ProductRepository productRepository) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.productRepository = productRepository;
     }
 
-    //Resources
     @PutMapping("/{id}")
-    public String update(@PathVariable long id,
-                         @ModelAttribute UpdateRequest request,
-                         Model model) {
+    public String update(@PathVariable Long id, OrderDto orderDto, Model model) {
         try {
-            orderService.update(id, request);
-
+            orderService.update(orderDto);
             model.addAttribute("orders", orderService.findAll());
             return OrderTemplatePath.MANAGE.getPath();
-
-        } catch (IllegalStateException ex) {
-            model.addAttribute("request", request);
+        } catch (Exception ex) {
+            model.addAttribute("order", orderDto);
             model.addAttribute("error", ex.getMessage());
-
-            List<Product> allProducts = productRepository.findAll();
-            model.addAttribute("allProducts", allProducts);
-
-            try {
-                String productsJson = new ObjectMapper().writeValueAsString(allProducts);
-                model.addAttribute("productsJson", productsJson);
-            } catch (JsonProcessingException e) {
-                model.addAttribute("productsJson", "[]");
-            }
-
             return OrderTemplatePath.EDIT.getPath();
         }
     }
 
-
     //Views
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable long id, Model model) throws JsonProcessingException {
-        UpdateRequest request = orderService.createUpdateRequest(id);
-        model.addAttribute("request", request);
-
-
-        List<Product> allProducts = productRepository.findAll();
-        ObjectMapper mapper = new ObjectMapper();
-        String productsJson = mapper.writeValueAsString(allProducts);
-
-        model.addAttribute("productsJson", productsJson);
-        model.addAttribute("allProducts", allProducts);
-
+    public String edit(@PathVariable long id, Model model) {
+        OrderDto order = orderService.orderDto(id);
+        model.addAttribute("order", order);
 
         return OrderTemplatePath.EDIT.getPath();
     }
 
+    //TODO: Change to use dtos.
     @GetMapping("/manage")
     public String manage(Model model) {
         model.addAttribute("orders", orderService.findAll());
