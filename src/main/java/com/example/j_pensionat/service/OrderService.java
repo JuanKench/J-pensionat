@@ -75,6 +75,9 @@ public class OrderService {
     }
 
     public Order createOrder(CreateOrderDto dto) {
+        if (orderRepository.existsOverlappingBooking(dto.getRoomId(), dto.getStartDate(), dto.getEndDate())) {
+            throw new IllegalArgumentException("Rummet är redan bokat under den valda perioden.");
+        }
         Customer customer;
 
         if (dto.isUseExistingCustomer() && dto.getCustomerId() != null) {
