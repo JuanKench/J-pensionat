@@ -1,5 +1,6 @@
 package com.example.j_pensionat.dto;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -7,7 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CustomerDto {
     private Long id;
+    @Pattern(regexp = "^[\\p{IsLatin}\\s'-]+$", message = "lässen men programmet förstår bara latinska bokstäver")
     private String firstName;
+    @Pattern(regexp = "^[\\p{IsLatin}\\s'-]+$", message = "lässen men programmet förstår bara latinska bokstäver")
     private String lastName;
     private String phoneNumber;
     private boolean hasPaid;
