@@ -4,6 +4,7 @@ import com.example.j_pensionat.enums.RoomCategory;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
+@Table(name = "rooms")
 public class Room {
     @Id
     @GeneratedValue
@@ -20,7 +22,7 @@ public class Room {
     private String description;
     private String name;
     private int size;
-
+    private int maxGuests;
 
     public RoomCategory getRoomCategory(){
         return category;

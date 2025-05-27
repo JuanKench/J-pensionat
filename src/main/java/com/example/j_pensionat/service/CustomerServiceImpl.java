@@ -43,6 +43,9 @@ public class CustomerServiceImpl implements CustomerService {
                 .collect(Collectors.toList());
     }
 
+    public List<CustomerDto> customerDtos() {
+        return customerRepository.findAll().stream().map(customerMapper::toDto).toList();
+    }
 
     @Override
     public CustomerDto findCustomerById(Long id) {

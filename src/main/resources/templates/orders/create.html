@@ -1,3 +1,6 @@
+<!-- @thymesVar id="createOrderDto" type="com.example.j_pensionat.dto.CreateOrderDto" -->
+<!-- @thymesVar id="room" type="com.example.j_pensionat.dto.RoomDto" -->
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -14,13 +17,18 @@
 <body>
 <h1>Skapa ny bokning</h1>
 
-<!-- Error message block -->
-<div th:if="${errorMessage}" style="color:red; font-weight:bold;">
-    <p th:text="${errorMessage}"></p>
-</div>
-
 <form th:action="@{/orders/create}" th:object="${createOrderDto}" method="post">
-    <h3>Kundtyp</h3>
+    <div th:if="${#fields.hasErrors()}" style="color:red; font-weight:bold;">
+        <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+    </div>
+
+    <div th:if="${errorMessage}" style="color:red; font-weight:bold;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <input type="hidden" th:field="*{roomId}" />
+
+    <h3>Kund</h3>
     <label>
         <input type="radio" th:field="*{useExistingCustomer}" value="true" checked onchange="toggleCustomerFields()" />
         Använd befintlig kund
@@ -41,27 +49,48 @@
 
     <div id="new-customer" style="display:none;" th:insert="fragments/customer-form-fragment :: customerFields"></div>
 
-    <h3>Bokningsdetaljer</h3>
-    <label>Rum:</label>
-    <select th:field="*{roomId}">
-        <option th:each="r : ${rooms}" th:value="${r.id}" th:text="${r.name}">Rum</option>
-    </select><br/>
+    <h3>Rum</h3>
+    <label>Datum: </label>
+    <input th:field="*{startDate}" type="date">
+    -
+    <input th:field="*{endDate}" type="date">
 
-    <label>Startdatum:</label>
-    <input type="date" th:field="*{startDate}"/><br/>
+    <br>
+    <label>Namn: </label>
+    <span th:text="${createOrderDto.roomName}"></span>
 
-    <label>Slutdatum:</label>
-    <input type="date" th:field="*{endDate}"/><br/>
+    <br>
+    <label>Beskrivning: </label>
+    <span th:text="${createOrderDto.roomDescription}"></span>
 
-    <label>Tillval:</label>
-    <select multiple th:field="*{productIds}">
-        <option th:each="p : ${products}" th:value="${p.id}" th:text="${p.name}">Tillval</option>
-    </select><br/>
-
+    <br>
     <label>Anteckningar:</label>
     <textarea th:field="*{notes}"></textarea><br/>
 
+    <h3>Tillägg</h3>
+    <div th:each="lineItem, stat : *{lineItems}" id="lineItems">
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].productId}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].productName}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].productType}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].price}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].available}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].maxQuantity}" />
+        <input type="hidden" th:field="*{lineItems[__${stat.index}__].orderId}" />
+
+
+        <label th:text="${lineItem.productName}">Produktnamn</label>
+
+        <input th:field="*{lineItems[__${stat.index}__].quantity}"
+               min="0"
+               th:max="${lineItem.maxQuantity}"
+               th:disabled="${!lineItem.available}" />
+
+        <span th:if="${!lineItem.available}" style="color: gray;">Ej tillgänglig</span>
+    </div>
+
     <button type="submit">Skapa bokning</button>
+    <br>
+    <a href="/orders/manage">Tillbaka</a>
 </form>
 </body>
 </html>

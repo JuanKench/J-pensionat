@@ -1,0 +1,62 @@
+<!-- @thymesVar id="room" type="com.example.j_pensionat.dto.RoomDto" -->
+<!-- @thymesVar id="roomFilterDto" type="com.example.j_pensionat.dto.RoomFilterDto" -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Rum</title>
+</head>
+<body>
+
+<h1>Rum</h1>
+
+<h3>Filtrera</h3>
+<form th:object="${roomFilterDto}" th:action="@{/rooms/filter}">
+    <label for="guests">Antal gäster: </label>
+    <input th:field="*{guests}" id="guests">
+
+    <br>
+    <label>Datum: </label>
+    <input th:field="*{startDate}" type="date">
+    -
+    <input th:field="*{endDate}" type="date">
+
+    <br>
+    <button type="submit">Applicera filter</button>
+</form>
+
+<h3>Tillgängliga rum</h3>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Namn</th>
+        <th>Beskrivning</th>
+        <th>Kategori</th>
+        <th>Storlek</th>
+        <th>Max gäster</th>
+        <th>Välj</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="room : ${rooms}">
+        <td th:text="${room.name}">Name</td>
+        <td th:text="${room.description}">Description</td>
+        <td th:text="${room.category}">Category</td>
+        <td th:text="${room.size}">Size</td>
+        <td th:text="${room.maxGuests}">Max Guests</td>
+        <td th:if="${room.available}">
+            <a th:href="@{/orders/create(roomId=${room.id})}">
+                <button>Välj</button>
+            </a>
+        </td>
+        <td th:unless="${room.available}">
+            <span>Inte tillgänglig</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/">Tillbaka</a>
+</body>
+</html>

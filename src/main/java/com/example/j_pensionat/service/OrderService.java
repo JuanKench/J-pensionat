@@ -1,9 +1,9 @@
 package com.example.j_pensionat.service;
 
 import com.example.j_pensionat.dto.CreateOrderDto;
+import com.example.j_pensionat.dto.order.LineItemDto;
 import com.example.j_pensionat.dto.order.OrderDto;
-import com.example.j_pensionat.enums.ProductType;
-import com.example.j_pensionat.enums.RoomCategory;
+import com.example.j_pensionat.factory.LineItemDtoFactory;
 import com.example.j_pensionat.factory.OrderDtoFactory;
 import com.example.j_pensionat.mapper.OrderMapper;
 import com.example.j_pensionat.model.*;
@@ -25,19 +25,30 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderDtoFactory orderDtoFactory;
     private final ProductService productService;
-    private final OrderMapper orderMapper;
     private final CustomerRepository customerRepository;
     private final RoomRepository roomRepository;
-    private final ProductRepository productRepository;
+    private final LineItemDtoFactory lineItemDtoFactory;
+    private final RoomService roomService;
 
-    public OrderService(OrderRepository orderRepository, OrderDtoFactory orderDtoFactory, ProductService productService, OrderMapper orderMapper, CustomerRepository customerRepository, RoomRepository roomRepository, ProductRepository productRepository) {
+    public OrderService(OrderRepository orderRepository, OrderDtoFactory orderDtoFactory, ProductService productService, CustomerRepository customerRepository, RoomRepository roomRepository, LineItemDtoFactory lineItemDtoFactory, RoomService roomService) {
         this.orderRepository = orderRepository;
         this.orderDtoFactory = orderDtoFactory;
         this.productService = productService;
-        this.orderMapper = orderMapper;
         this.customerRepository = customerRepository;
         this.roomRepository = roomRepository;
-        this.productRepository = productRepository;
+        this.lineItemDtoFactory = lineItemDtoFactory;
+        this.roomService = roomService;
+    }
+
+    public List<OrderDto> orderDtos() {
+        return orderDtoFactory.create(orderRepository.findAll());
+    }
+
+    public CreateOrderDto createOrderDto(Long id) {
+        Room room = roomService.findById(id);
+        List<LineItemDto> lineItems = productService.allProducts().stream().map(product -> lineItemDtoFactory.draft(product, room)).toList();
+
+        return CreateOrderDto.builder().roomId(id).lineItems(lineItems).roomDescription(room.getDescription()).roomName(room.getName()).build();
     }
 
     public OrderDto orderDto(Long id) {
@@ -74,6 +85,7 @@ public class OrderService {
         return orderRepository.findById(id).orElseThrow();
     }
 
+    @Transactional
     public Order createOrder(CreateOrderDto dto) {
         if (orderRepository.existsOverlappingBooking(dto.getRoomId(), dto.getStartDate(), dto.getEndDate())) {
             throw new IllegalArgumentException("Rummet är redan bokat under den valda perioden.");
@@ -96,16 +108,6 @@ public class OrderService {
         Room room = roomRepository.findById(dto.getRoomId())
                 .orElseThrow(() -> new IllegalArgumentException("Rummet finns inte"));
 
-        List<Product> products = productRepository.findAllById(dto.getProductIds());
-
-        if (room.getRoomCategory() == RoomCategory.SINGLE) {
-            boolean hasExtraBed = products.stream()
-                    .anyMatch(p -> p.getProductType() == ProductType.EXTRA_BED);
-            if (hasExtraBed) {
-                throw new IllegalArgumentException("Extra säng får endast bokas med dubbelrum.");
-            }
-        }
-
         Order order = new Order();
         order.setCustomer(customer);
         order.setRoom(room);
@@ -113,15 +115,14 @@ public class OrderService {
         order.setEndDate(dto.getEndDate());
         order.setNotes(dto.getNotes());
 
-        List<LineItem> lineItems = products.stream()
-                .map(product -> {
-                    LineItem item = new LineItem();
-                    item.setProduct(product);
-                    item.setOrder(order);
-                    item.setQuantity(1);
-                    return item;
-                })
-                .collect(Collectors.toList());
+        List<LineItem> lineItems = dto.getLineItems().stream().peek(lineItemDto -> {
+            if(lineItemDto.getQuantity() > lineItemDto.getMaxQuantity()) {
+                throw new IllegalStateException("Max quantity exceeded for: " + lineItemDto.getProductName());
+            }
+        }).filter(lineItemDto -> lineItemDto.getQuantity() > 0).map(lineItemDto -> {
+            Product product = productService.findById(lineItemDto.getProductId());
+            return new LineItem(order, product, lineItemDto.getQuantity());
+        }).collect(Collectors.toCollection(ArrayList::new));
 
         order.setLineItems(lineItems);
 
@@ -133,7 +134,4 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException("Bokningen finns inte"));
         orderRepository.delete(order);
     }
-
-
-
 }

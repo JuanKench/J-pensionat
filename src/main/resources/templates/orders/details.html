@@ -1,41 +1,40 @@
-<!-- @thymesVar id="order" type="com.example.j_pensionat.model.Order" -->
-<!-- @thymesVar id="bookingAddOn" type="com.example.j_pensionat.model.LineItem" -->
-<!-- @thymesVar id="addOn" type="com.example.j_pensionat.model.Product" -->
+<!-- @thymesVar id="order" type="com.example.j_pensionat.dto.order.OrderDto" -->
 
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8" content="text/html; charset=UTF-8"/>
-        <title>bookings</title>
+        <title>Detaljer</title>
     </head>
     <body>
-    <h1>Booking Details</h1>
-    <p>Customer: <span th:text="${order.customer.lastName}"></span></p>
-    <p>Room: <span th:text="${order.room.name}"></span></p>
-    <p>Start Date: <span th:text="${order.startDate}"></span></p>
-    <p>End Date: <span th:text="${order.endDate}"></span></p>
+    <h1>Boknings detaljer</h1>
+    <p>Kund: <span th:text="${order.customerName}"></span></p>
+    <p>Rum: <span th:text="${order.roomName}"></span></p>
+    <p>Startdatum: <span th:text="${order.startDate}"></span></p>
+    <p>Slutdatum: <span th:text="${order.endDate}"></span></p>
     <p>Anteckningar: <span th:text="${order.notes}"></span></p>
-    <p>Betalstatus: <span th:text="${order.customer.hasPaid}"></span></p>
+    <p>Betalstatus: <span th:text="${order.hasPaid}"></span></p>
 
     <p>Tillägg: </p>
-    <table>
+    <table border="1">
         <thead>
         <tr>
-            <th>Name</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
+            <th>Produktnamn</th>
+            <th>Antal</th>
+            <th>Pris (kr)</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="lineItem : ${order.lineItems}">
-            <td th:text="${lineItem.product.name}">Produktnamn</td>
+        <tr th:each="lineItem : ${order.lineItems}" th:if="${lineItem.quantity > 0}">
+            <td th:text="${lineItem.productName}">Produktnamn</td>
             <td th:text="${lineItem.quantity}">Antal</td>
-            <td th:text="${lineItem.product.price}">Pris</td>
+            <td th:text="${lineItem.price}">Pris</td>
         </tr>
 
         </tbody>
     </table>
-    <a th:href="@{../../orders/edit/{id}(id=${order.id})}">Ändra</a>
+
+    <a th:href="@{../../orders/edit/{id}(id=${order.orderId})}">Ändra</a>
     <br>
     <a href="../../orders/manage">Tillbaka</a>
     </body>
