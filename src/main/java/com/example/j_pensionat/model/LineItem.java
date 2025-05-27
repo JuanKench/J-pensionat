@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "line_items")
 public class LineItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

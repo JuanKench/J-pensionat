@@ -5,17 +5,14 @@ import com.example.j_pensionat.dto.order.LineItemDto;
 import com.example.j_pensionat.dto.order.OrderDto;
 import com.example.j_pensionat.factory.LineItemDtoFactory;
 import com.example.j_pensionat.factory.OrderDtoFactory;
-import com.example.j_pensionat.mapper.OrderMapper;
 import com.example.j_pensionat.model.*;
 import com.example.j_pensionat.repository.CustomerRepository;
 import com.example.j_pensionat.repository.OrderRepository;
-import com.example.j_pensionat.repository.ProductRepository;
 import com.example.j_pensionat.repository.RoomRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
@@ -87,9 +84,10 @@ public class OrderService {
 
     @Transactional
     public Order createOrder(CreateOrderDto dto) {
-        if (orderRepository.existsOverlappingBooking(dto.getRoomId(), dto.getStartDate(), dto.getEndDate())) {
+        if (!roomService.hasExistingBooking(dto.getRoomId(), dto.getStartDate(), dto.getEndDate())) {
             throw new IllegalArgumentException("Rummet är redan bokat under den valda perioden.");
         }
+
         Customer customer;
 
         if (dto.isUseExistingCustomer() && dto.getCustomerId() != null) {

@@ -6,7 +6,6 @@ import com.example.j_pensionat.model.LineItem;
 import com.example.j_pensionat.model.Order;
 import com.example.j_pensionat.service.ProductService;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;

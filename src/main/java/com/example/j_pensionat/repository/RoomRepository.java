@@ -12,8 +12,13 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query("select o.room.id from Order o where :startDate <= o.endDate and :endDate >= o.startDate")
-    List<Long> findUnavailableRoomsWithinRange(@Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
+    List<Long> findUnavailableRoomsWithinRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     @Query("select r from Room r where r.maxGuests >= :guests and r.id not in (select o.room.id from Order o where :startDate <= o.endDate and :endDate >= o.startDate)")
-    List<Room> filteredByDateAndGuests(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("guests") int guests );
+    List<Room> filteredByDateAndGuests(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, @Param("guests") int guests);
+
+    @Query("select count(o) = 0 from Order o where o.room.id = :roomId and :startDate <= o.endDate and :endDate >= o.startDate")
+    boolean roomAvailable(@Param("startDate") LocalDate startDate,
+                          @Param("endDate") LocalDate endDate,
+                          @Param("roomId") Long roomId);
 }
