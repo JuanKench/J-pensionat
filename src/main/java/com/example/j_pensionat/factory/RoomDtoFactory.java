@@ -3,8 +3,6 @@ package com.example.j_pensionat.factory;
 import com.example.j_pensionat.dto.RoomDto;
 import com.example.j_pensionat.model.Room;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
 import java.util.List;
 
 @Component

@@ -24,11 +24,6 @@ public class RoomService {
         return roomRepository.findById(id).orElseThrow();
     }
 
-    public RoomDto roomDto(Long id) {
-        Room room = roomRepository.findById(id).orElseThrow(); //TODO Change
-        return roomDtoFactory.dto(room, roomRepository.findUnavailableRoomsWithinRange(LocalDate.now(), LocalDate.now()));
-    }
-
     public List<RoomDto> roomDtos(List<Room> rooms) {
         return roomDtoFactory.create(rooms, roomRepository.findUnavailableRoomsWithinRange(LocalDate.now(), LocalDate.now()));
     }
@@ -37,14 +32,15 @@ public class RoomService {
         return roomDtos(roomRepository.findAll());
     }
 
-//    public List<RoomDto> filteredByDateAndGuests(RoomFilterDto filter) {
-//        return roomDtos(roomRepository.filteredByDateAndGuests(filter.getStartDate(), filter.getEndDate(), filter.getGuests()));
-//    }
-
     public List<RoomDto> filteredByDateAndGuests(RoomFilterDto filter) {
         List<Room> rooms = roomRepository.filteredByDateAndGuests(
                 filter.getStartDate(), filter.getEndDate(), filter.getGuests());
 
-        return roomDtoFactory.create(rooms); // all are available by definition
+        return roomDtoFactory.create(rooms);
+    }
+
+    public boolean hasExistingBooking(Long id, LocalDate start, LocalDate end) {
+        System.out.println("room availability: " + roomRepository.roomAvailable(start, end, id));
+        return roomRepository.roomAvailable(start, end, id);
     }
 }
