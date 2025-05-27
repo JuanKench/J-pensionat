@@ -2,21 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
+
 <div th:fragment="customerFields">
-  <label>Förnamn:</label>
-  <input type="text" th:field="*{firstName}" /><br/>
+  <div class="mb-3">
+    <label for="firstName" class="form-label">Förnamn:</label>
+    <input type="text" id="firstName" th:field="*{firstName}" class="form-control"/>
+    <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger small"></div>
+  </div>
 
-  <label>Efternamn:</label>
-  <input type="text" th:field="*{lastName}" /><br/>
+  <div class="mb-3">
+    <label for="lastName" class="form-label">Efternamn:</label>
+    <input type="text" id="lastName" th:field="*{lastName}" class="form-control"/>
+    <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger small"></div>
+  </div>
 
-  <label>Telefonnummer:</label>
-  <input type="text" th:field="*{phoneNumber}" /><br/>
+  <div class="mb-3">
+    <label for="phoneNumber" class="form-label">Telefonnummer:</label>
+    <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control"/>
+    <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger small"></div>
+  </div>
 
-  <label>E-post:</label>
-  <input type="email" th:field="*{email}" /><br/>
+  <div class="mb-3">
+    <label for="email" class="form-label">E-post:</label>
+    <input type="email" id="email" th:field="*{email}" class="form-control"/>
+    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger small"></div>
+  </div>
 
-  <label>Adress:</label>
-  <input type="text" th:field="*{address}" /><br/>
+  <div class="mb-3">
+    <label for="address" class="form-label">Adress:</label>
+    <input type="text" id="address" th:field="*{address}" class="form-control"/>
+    <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-danger small"></div>
+  </div>
 </div>
 </body>
 </html>

@@ -37,7 +37,14 @@ public class RoomService {
         return roomDtos(roomRepository.findAll());
     }
 
+//    public List<RoomDto> filteredByDateAndGuests(RoomFilterDto filter) {
+//        return roomDtos(roomRepository.filteredByDateAndGuests(filter.getStartDate(), filter.getEndDate(), filter.getGuests()));
+//    }
+
     public List<RoomDto> filteredByDateAndGuests(RoomFilterDto filter) {
-        return roomDtos(roomRepository.filteredByDateAndGuests(filter.getStartDate(), filter.getEndDate(), filter.getGuests()));
+        List<Room> rooms = roomRepository.filteredByDateAndGuests(
+                filter.getStartDate(), filter.getEndDate(), filter.getGuests());
+
+        return roomDtoFactory.create(rooms); // all are available by definition
     }
 }

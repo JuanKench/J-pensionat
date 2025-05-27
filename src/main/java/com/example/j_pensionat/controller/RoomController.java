@@ -3,8 +3,10 @@ package com.example.j_pensionat.controller;
 import com.example.j_pensionat.dto.RoomFilterDto;
 import com.example.j_pensionat.enums.templatepath.RoomTemplatePath;
 import com.example.j_pensionat.service.RoomService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,11 +21,21 @@ public class RoomController {
     }
 
     @GetMapping("/filter")
-    public String filter(RoomFilterDto roomFilterDto, Model model) {
-        // TODO
-        model.addAttribute("rooms", roomService.filteredByDateAndGuests(roomFilterDto));
+    public String filter(@Valid RoomFilterDto roomFilterDto, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("rooms", roomService.allRooms());
+            return RoomTemplatePath.LIST.getPath();
+        }
 
-        return RoomTemplatePath.LIST.getPath(); //TODO not sure this will work like at all. But... probably?
+        if (roomFilterDto.getEndDate().isBefore(roomFilterDto.getStartDate())) {
+            model.addAttribute("rooms", roomService.allRooms());
+            model.addAttribute("roomFilterDto", roomFilterDto);
+            model.addAttribute("dateError", "Slutdatum kan inte vara före startdatum.");
+            return RoomTemplatePath.LIST.getPath();
+        }
+
+        model.addAttribute("rooms", roomService.filteredByDateAndGuests(roomFilterDto));
+        return RoomTemplatePath.LIST.getPath();
     }
 
     @GetMapping("/list")
