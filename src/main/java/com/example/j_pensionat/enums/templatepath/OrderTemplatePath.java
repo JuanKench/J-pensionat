@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum OrderTemplatePath {
     DETAILS("orders/details"),
-    MANAGE("/orders/manage"),
+    MANAGE("orders/manage"),
     CREATE("orders/create"),
     EDIT("orders/edit");
 

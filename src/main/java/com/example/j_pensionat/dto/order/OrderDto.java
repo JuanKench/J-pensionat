@@ -5,9 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
-@Data //TODO: Not so good because what if id is changed.
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,4 +16,14 @@ public class OrderDto {
     Long orderId;
     String notes;
     List<LineItemDto> lineItems;
+
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Long customerId;
+    private String customerName;
+    private Long roomId;
+    private String roomName;
+
+    private boolean hasPaid;
+    private boolean cancelled = false;
 }

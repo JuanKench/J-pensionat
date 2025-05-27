@@ -5,50 +5,61 @@
 <head>
     <meta charset="UTF-8" />
     <title>Ändra bokning</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 </head>
-<body>
+<body class="container py-4">
 
-<h1>Ändra bokning</h1>
+<h1 class="mb-4">Ändra bokning</h1>
 
-<div th:if="${error}" style="color: red; font-weight: bold;">
+<div th:if="${error}" class="alert alert-danger">
     <p th:text="${error}"></p>
 </div>
 
-
-<form th:action="@{/orders/{id}(id=${order.orderId})}" method="post" th:object="${order}">
+<form th:action="@{/orders/{id}(id=${order.orderId})}" method="post" th:object="${order}" class="border p-4 rounded shadow-sm bg-light">
     <input type="hidden" name="_method" value="put">
-
     <input type="hidden" th:field="*{orderId}" />
 
-    <label for="notes">Anteckningar: </label>
-    <input th:field="*{notes}" id="notes">
-
-    <br>
-    <label for="lineItems">Tillägg: </label>
-    <div th:each="lineItem, stat : *{lineItems}" id="lineItems">
-        <input type="hidden" th:field="*{lineItems[__${stat.index}__].productId}" />
-        <input type="hidden" th:field="*{lineItems[__${stat.index}__].productName}" />
-        <input type="hidden" th:field="*{lineItems[__${stat.index}__].productType}" />
-        <input type="hidden" th:field="*{lineItems[__${stat.index}__].price}" />
-        <input type="hidden" th:field="*{lineItems[__${stat.index}__].available}" />
-        <input type="hidden" th:field="*{lineItems[__${stat.index}__].maxQuantity}" />
-        <input type="hidden" th:field="*{lineItems[__${stat.index}__].orderId}" />
-
-
-        <label th:text="${lineItem.productName}">Produktnamn</label>
-
-        <input th:field="*{lineItems[__${stat.index}__].quantity}"
-               min="0"
-               th:max="${lineItem.maxQuantity}"
-               th:disabled="${!lineItem.available}" />
-
-        <span th:if="${!lineItem.available}" style="color: gray;">Ej tillgänglig</span>
+    <div class="mb-3">
+        <label for="notes" class="form-label">Anteckningar:</label>
+        <input th:field="*{notes}" id="notes" class="form-control">
     </div>
 
-    <button type="submit">Bekräfta</button>
+    <div class="mb-3">
+        <label class="form-label">Tillägg:</label>
+        <div th:each="lineItem, stat : *{lineItems}" class="mb-3 border p-3 rounded bg-white">
+            <input type="hidden" th:field="*{lineItems[__${stat.index}__].productId}" />
+            <input type="hidden" th:field="*{lineItems[__${stat.index}__].productName}" />
+            <input type="hidden" th:field="*{lineItems[__${stat.index}__].productType}" />
+            <input type="hidden" th:field="*{lineItems[__${stat.index}__].price}" />
+            <input type="hidden" th:field="*{lineItems[__${stat.index}__].available}" />
+            <input type="hidden" th:field="*{lineItems[__${stat.index}__].maxQuantity}" />
+            <input type="hidden" th:field="*{lineItems[__${stat.index}__].orderId}" />
 
-    <br>
-    <a href="/orders/manage">Tillbaka</a>
+            <div class="row align-items-center">
+                <div class="col-sm-4">
+                    <label th:text="${lineItem.productName}" class="form-label fw-bold">Produktnamn</label>
+                </div>
+                <div class="col-sm-4">
+                    <input th:field="*{lineItems[__${stat.index}__].quantity}"
+                           type="number"
+                           min="0"
+                           th:max="${lineItem.maxQuantity}"
+                           th:disabled="${!lineItem.available}"
+                           class="form-control">
+                </div>
+                <div class="col-sm-4">
+                    <span th:if="${!lineItem.available}" class="text-muted">Ej tillgänglig</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-3">
+        <button type="submit" class="btn btn-primary">Bekräfta</button>
+        <a href="/orders/manage" class="btn btn-secondary">Tillbaka</a>
+    </div>
 </form>
+
 </body>
 </html>
+
