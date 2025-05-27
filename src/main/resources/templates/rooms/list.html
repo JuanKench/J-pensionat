@@ -6,57 +6,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Rum</title>
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<h1>Rum</h1>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Rum</h1>
 
-<h3>Filtrera</h3>
-<form th:object="${roomFilterDto}" th:action="@{/rooms/filter}">
-    <label for="guests">Antal gäster: </label>
-    <input th:field="*{guests}" id="guests">
+    <h3>Filtrera</h3>
+    <form th:object="${roomFilterDto}" th:action="@{/rooms/filter}" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <label for="guests" class="form-label">Antal gäster:</label>
+            <input th:field="*{guests}" id="guests" class="form-control" />
+        </div>
 
-    <br>
-    <label>Datum: </label>
-    <input th:field="*{startDate}" type="date">
-    -
-    <input th:field="*{endDate}" type="date">
+        <div class="col-md-4">
+            <label class="form-label">Datum:</label>
+            <div class="d-flex align-items-center">
+                <input th:field="*{startDate}" type="date" class="form-control me-2" />
+                <span class="mx-1">–</span>
+                <input th:field="*{endDate}" type="date" class="form-control" />
+            </div>
+        </div>
 
-    <br>
-    <button type="submit">Applicera filter</button>
-</form>
+        <div class="col-md-3 align-self-end">
+            <button type="submit" class="btn btn-primary">Applicera filter</button>
+        </div>
+    </form>
 
-<h3>Tillgängliga rum</h3>
-<table border="1">
-    <thead>
-    <tr>
-        <th>Namn</th>
-        <th>Beskrivning</th>
-        <th>Kategori</th>
-        <th>Storlek</th>
-        <th>Max gäster</th>
-        <th>Välj</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="room : ${rooms}">
-        <td th:text="${room.name}">Name</td>
-        <td th:text="${room.description}">Description</td>
-        <td th:text="${room.category}">Category</td>
-        <td th:text="${room.size}">Size</td>
-        <td th:text="${room.maxGuests}">Max Guests</td>
-        <td th:if="${room.available}">
-            <a th:href="@{/orders/create(roomId=${room.id})}">
-                <button>Välj</button>
-            </a>
-        </td>
-        <td th:unless="${room.available}">
-            <span>Inte tillgänglig</span>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <h3>Tillgängliga rum</h3>
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-light">
+        <tr>
+            <th>Namn</th>
+            <th>Beskrivning</th>
+            <th>Kategori</th>
+            <th>Storlek (m²)</th>
+            <th>Max gäster</th>
+            <th>Välj</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="room : ${rooms}">
+            <td th:text="${room.name}">Name</td>
+            <td th:text="${room.description}">Description</td>
+            <td th:text="${room.category}">Category</td>
+            <td th:text="${room.size}">Size</td>
+            <td th:text="${room.maxGuests}">Max Guests</td>
+            <td>
+                <div th:if="${room.available}">
+                    <a th:href="@{/orders/create(roomId=${room.id})}" class="btn btn-success btn-sm">Välj</a>
+                </div>
+                <div th:unless="${room.available}">
+                    <span class="text-muted">Inte tillgänglig</span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-<a href="/">Tillbaka</a>
+    <a href="/" class="btn btn-outline-secondary">Tillbaka</a>
+</div>
+
+<!-- Optional Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,6 +5,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Ny bokning</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script>
         function toggleCustomerFields() {
             const useExisting = document.querySelector('input[name="useExistingCustomer"]:checked').value === 'true';
@@ -14,61 +15,87 @@
         window.onload = toggleCustomerFields;
     </script>
 </head>
-<body>
-<h1>Skapa ny bokning</h1>
+<body class="container py-4">
 
-<form th:action="@{/orders/create}" th:object="${createOrderDto}" method="post">
-    <div th:if="${#fields.hasErrors()}" style="color:red; font-weight:bold;">
+<h1 class="mb-4">Skapa ny bokning</h1>
+
+<form th:action="@{/orders/create}" th:object="${createOrderDto}" method="post" class="needs-validation" novalidate>
+    <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
         <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
     </div>
 
-    <div th:if="${errorMessage}" style="color:red; font-weight:bold;">
+    <div th:if="${errorMessage}" class="alert alert-danger">
         <p th:text="${errorMessage}"></p>
     </div>
 
     <input type="hidden" th:field="*{roomId}" />
 
     <h3>Kund</h3>
-    <label>
-        <input type="radio" th:field="*{useExistingCustomer}" value="true" checked onchange="toggleCustomerFields()" />
-        Använd befintlig kund
-    </label>
-    <label>
-        <input type="radio" th:field="*{useExistingCustomer}" value="false" onchange="toggleCustomerFields()" />
-        Skapa ny kund
-    </label>
+    <div class="mb-3">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" th:field="*{useExistingCustomer}" value="true" checked onchange="toggleCustomerFields()" />
+            <label class="form-check-label">Använd befintlig kund</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" th:field="*{useExistingCustomer}" value="false" onchange="toggleCustomerFields()" />
+            <label class="form-check-label">Skapa ny kund</label>
+        </div>
+    </div>
 
-    <div id="existing-customer">
-        <label>Kund:</label>
-        <select th:field="*{customerId}">
+    <div id="existing-customer" class="mb-3">
+        <label class="form-label">Kund:</label>
+        <select class="form-select" th:field="*{customerId}">
             <option th:each="c : ${customers}"
                     th:value="${c.id}"
                     th:text="${c.firstName + ' ' + c.lastName}">Kund</option>
-        </select><br/>
+        </select>
     </div>
 
     <div id="new-customer" style="display:none;" th:insert="fragments/customer-form-fragment :: customerFields"></div>
 
     <h3>Rum</h3>
-    <label>Datum: </label>
-    <input th:field="*{startDate}" type="date">
-    -
-    <input th:field="*{endDate}" type="date">
+    <div class="row mb-3">
+        <div class="col">
+            <label class="form-label">Datum:</label>
+            <div class="d-flex gap-2">
+                <input class="form-control" th:field="*{startDate}" type="date">
+                <span class="align-self-center">-</span>
+                <input class="form-control" th:field="*{endDate}" type="date">
+            </div>
+        </div>
+    </div>
 
-    <br>
-    <label>Namn: </label>
-    <span th:text="${createOrderDto.roomName}"></span>
+    <div class="mb-2">
+        <strong>Namn:</strong> <span th:text="${createOrderDto.roomName}"></span>
+    </div>
 
-    <br>
-    <label>Beskrivning: </label>
-    <span th:text="${createOrderDto.roomDescription}"></span>
+    <div class="mb-3">
+        <strong>Beskrivning:</strong> <span th:text="${createOrderDto.roomDescription}"></span>
+    </div>
 
-    <br>
-    <label>Anteckningar:</label>
-    <textarea th:field="*{notes}"></textarea><br/>
+    <div class="mb-3">
+        <label for="notes" class="form-label">Anteckningar:</label>
+        <textarea th:field="*{notes}" class="form-control" id="notes" rows="3"></textarea>
+    </div>
 
     <h3>Tillägg</h3>
-    <div th:each="lineItem, stat : *{lineItems}" id="lineItems">
+    <div th:each="lineItem, stat : *{lineItems}" class="mb-3 row align-items-center">
+        <div class="col-md-4">
+            <label th:text="${lineItem.productName}" class="form-label">Produktnamn</label>
+        </div>
+        <div class="col-md-4">
+            <input type="number"
+                   class="form-control"
+                   th:field="*{lineItems[__${stat.index}__].quantity}"
+                   min="0"
+                   th:max="${lineItem.maxQuantity}"
+                   th:disabled="${!lineItem.available}" />
+        </div>
+        <div class="col-md-4 text-muted" th:if="${!lineItem.available}">
+            Ej tillgänglig
+        </div>
+
+        <!-- Hidden fields -->
         <input type="hidden" th:field="*{lineItems[__${stat.index}__].productId}" />
         <input type="hidden" th:field="*{lineItems[__${stat.index}__].productName}" />
         <input type="hidden" th:field="*{lineItems[__${stat.index}__].productType}" />
@@ -76,21 +103,13 @@
         <input type="hidden" th:field="*{lineItems[__${stat.index}__].available}" />
         <input type="hidden" th:field="*{lineItems[__${stat.index}__].maxQuantity}" />
         <input type="hidden" th:field="*{lineItems[__${stat.index}__].orderId}" />
-
-
-        <label th:text="${lineItem.productName}">Produktnamn</label>
-
-        <input th:field="*{lineItems[__${stat.index}__].quantity}"
-               min="0"
-               th:max="${lineItem.maxQuantity}"
-               th:disabled="${!lineItem.available}" />
-
-        <span th:if="${!lineItem.available}" style="color: gray;">Ej tillgänglig</span>
     </div>
 
-    <button type="submit">Skapa bokning</button>
-    <br>
-    <a href="/orders/manage">Tillbaka</a>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Skapa bokning</button>
+        <a href="/orders/manage" class="btn btn-secondary">Tillbaka</a>
+    </div>
 </form>
+
 </body>
 </html>
